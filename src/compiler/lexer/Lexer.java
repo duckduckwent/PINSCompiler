@@ -126,13 +126,8 @@ public class Lexer {
         var symbols = new ArrayList<Symbol>();
         boolean comment = false;
         Position position;
-<<<<<<< HEAD
         int line = 1;
         int col = 1;
-=======
-        int line = 0;
-        int col = 0;
->>>>>>> origin/main
 
         for (int i = 0; i < source.length(); i++) {
             // Nima smisla preverjati znakov, če je komentar, razen za '\n' na koncu, ki ga prekine
@@ -148,20 +143,12 @@ public class Lexer {
             }
             // Operator
             else if (currentToken == possibleTokenType.OP) {
-<<<<<<< HEAD
                 position = new Position(startLocation, new Location(line, col + 1));
-=======
-                position = new Position(startLocation, startLocation);
->>>>>>> origin/main
                 lexeme.append(source.charAt(i));
 
                 // Če je naslednji znak '=' potem gre za enega izmed ["==", "!=", "<=", ">="]
                 if (i+1 < source.length() && source.charAt(i + 1) == '=') {
-<<<<<<< HEAD
                     position = new Position(startLocation, new Location(line, ++col + 1));
-=======
-                    position = new Position(startLocation, new Location(line, ++col));
->>>>>>> origin/main
                     lexeme.append('=');
                     i++;
                 }
@@ -183,11 +170,7 @@ public class Lexer {
                         break;
                 }
 
-<<<<<<< HEAD
                 position = new Position(startLocation, new Location(line, col + 1));
-=======
-                position = new Position(startLocation, new Location(line, col));
->>>>>>> origin/main
                 symbols.add(new Symbol(position, C_INTEGER, lexeme.toString()));
                 i = j - 1;      // Povečamo index na toliko znakov, kolikor smo jih pregledali
             }
@@ -210,11 +193,7 @@ public class Lexer {
 
                 TokenType actualToken = keywordMapping.get(lexeme.toString()) == null ?
                         IDENTIFIER : keywordMapping.get(lexeme.toString());
-<<<<<<< HEAD
                 position = new Position(startLocation, new Location(line, col + 1));
-=======
-                position = new Position(startLocation, new Location(line, col));
->>>>>>> origin/main
                 symbols.add(new Symbol(position, actualToken, lexeme.toString()));
                 i = j - 1;      // Povečamo index na toliko znakov, kolikor smo jih pregledali
             }
@@ -245,11 +224,7 @@ public class Lexer {
                     else
                         break;
                 }
-<<<<<<< HEAD
                 position = new Position(startLocation, new Location(line, col + 1));
-=======
-                position = new Position(startLocation, new Location(line, col));
->>>>>>> origin/main
 
                 // Če niz ni zaprt, potem je prišlo do napake
                 if (!endString)
@@ -266,11 +241,7 @@ public class Lexer {
             // Povečevanje števila vrstice in stolpca
             if (i < source.length() && source.charAt(i) == '\n') {
                 comment = false;        // Ob novi vrsti je komentar neveljaven
-<<<<<<< HEAD
                 col = 0;
-=======
-                col = -1;
->>>>>>> origin/main
                 line++;
             }
             col++;
@@ -278,18 +249,8 @@ public class Lexer {
 
         // Konec programa -> EOF
         startLocation = new Location(line, col);
-<<<<<<< HEAD
         symbols.add(new Symbol(new Position(startLocation, startLocation), EOF, "$"));
 
-=======
-        symbols.add(new Symbol(new Position(startLocation, startLocation), EOF, "EOF"));
-
-        /*
-        for (Symbol x : symbols) {
-            System.out.println(x.toString());
-        }
-        */
->>>>>>> origin/main
         return symbols;
     }
 }
