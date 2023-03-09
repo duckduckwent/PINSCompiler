@@ -26,7 +26,7 @@ public class Lexer {
      * Preslikava iz ključnih besed v vrste simbolov.
      */
     private final static Map<String, TokenType> keywordMapping;
-    private enum possibleTokenType { OP, ID, INT, STR, COM, WHT, ERR }
+    private enum possibleTokenType { OP, ID, INT, STR, COM, WHT, TAB, ERR }
 
     static {
         keywordMapping = new HashMap<>();
@@ -144,10 +144,11 @@ public class Lexer {
             // Operator
             else if (currentToken == possibleTokenType.OP) {
                 position = new Position(startLocation, new Location(line, col + 1));
-                lexeme.append(source.charAt(i));
+                char c = source.charAt(i);
+                lexeme.append(c);
 
                 // Če je naslednji znak '=' potem gre za enega izmed ["==", "!=", "<=", ">="]
-                if (i+1 < source.length() && source.charAt(i + 1) == '=') {
+                if (i+1 < source.length() && source.charAt(i + 1) == '=' && (c == '=' || c == '!' || c == '<' || c == '>')) {
                     position = new Position(startLocation, new Location(line, ++col + 1));
                     lexeme.append('=');
                     i++;
@@ -232,6 +233,9 @@ public class Lexer {
 
                 symbols.add(new Symbol(position, C_STRING, lexeme.toString()));
                 i = j;  // Povečamo index na toliko znakov, kolikor smo jih pregledali + ena (preskoči še '\'' na koncu)
+            }
+            else if (currentToken == possibleTokenType.TAB) {
+                col += 3;   // Tab je enakovreden 4-im presledkom, zato se dodajo 3-je in ka koncu loop-a še 1
             }
             // Neveljaven znak
             else if (currentToken == possibleTokenType.ERR) {
