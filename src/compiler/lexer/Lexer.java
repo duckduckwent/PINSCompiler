@@ -58,12 +58,11 @@ public class Lexer {
             return possibleTokenType.INT;
 
         return switch (c) {
-            case '+', '-', '*', '/', '%', '&', '|', '!', '=', '<', '>', '(', ')', '[', ']', '{', '}', ':', ';', '.', ',' ->
-                    possibleTokenType.OP;
-            case ' ', '\t', '\r', '\n' -> possibleTokenType.WHT; // Tudi '\r' (newline na Windows shranjen kot '\r\n')
+            case ' ', '\r', '\n' -> possibleTokenType.WHT; // Tudi '\r' (newline na Windows shranjen kot '\r\n')
+            case '\t' -> possibleTokenType.TAB;
             case '\'' -> possibleTokenType.STR;
             case '#' -> possibleTokenType.COM;
-            default -> possibleTokenType.ERR;
+            default -> operatorMapping(Character.toString(c)) == null ? possibleTokenType.ERR : possibleTokenType.OP;
         };
     }
 
@@ -120,10 +119,10 @@ public class Lexer {
      * @return Seznam leksikalnih simbolov.
      */
     public List<Symbol> scan() {
-        possibleTokenType currentToken = getPossibleTokenType(source.charAt(0));
         StringBuilder lexeme = new StringBuilder();
         Location startLocation = Location.zero();
         var symbols = new ArrayList<Symbol>();
+        possibleTokenType currentToken = null;
         boolean comment = false;
         Position position;
         int line = 1;
@@ -229,7 +228,7 @@ public class Lexer {
 
                 // Če niz ni zaprt, potem je prišlo do napake
                 if (!endString)
-                    Report.error(position, "neveljaven niz");
+                    Report.error(position, "unresolved string");
 
                 symbols.add(new Symbol(position, C_STRING, lexeme.toString()));
                 i = j;  // Povečamo index na toliko znakov, kolikor smo jih pregledali + ena (preskoči še '\'' na koncu)
@@ -239,7 +238,7 @@ public class Lexer {
             }
             // Neveljaven znak
             else if (currentToken == possibleTokenType.ERR) {
-                Report.error(new Position(startLocation, startLocation), "neveljaven znak");
+                Report.error(new Position(startLocation, startLocation), "illegal character");
             }
 
             // Povečevanje števila vrstice in stolpca
