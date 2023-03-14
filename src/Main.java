@@ -4,12 +4,15 @@
  */
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 import cli.PINS;
 import cli.PINS.Phase;
 import compiler.lexer.Lexer;
+import compiler.parser.Parser;
 
 public class Main {
     /**
@@ -32,9 +35,7 @@ public class Main {
     }
 
     private static void run(PINS cli, String sourceCode) {
-        /**
-         * Izvedi leksikalno analizo.
-         */
+        // leksikalna analiza
         var symbols = new Lexer(sourceCode).scan();
         if (cli.dumpPhases.contains(Phase.LEX)) {
             for (var symbol : symbols) {
@@ -42,6 +43,16 @@ public class Main {
             }
         }
         if (cli.execPhase == Phase.LEX) {
+            return;
+        }
+
+        // sintaksna analiza
+        Optional<PrintStream> out = cli.dumpPhases.contains(Phase.SYN)
+                ? Optional.of(System.out)
+                : Optional.empty();
+        var parser = new Parser(symbols, out);
+        parser.parse();
+        if (cli.execPhase == Phase.SYN) {
             return;
         }
     }
