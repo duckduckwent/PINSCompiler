@@ -62,6 +62,9 @@ public class Parser {
             Report.error("syntax error: empty file");
         dump("source -> definitions");
         parseDefinitions();
+
+        if (!checkSkip(TokenType.EOF))
+            Report.error(symbol.position,"syntax error: expected EOF, got " + symbol.lexeme);
     }
 
     private void parseDefinitions() {
@@ -75,10 +78,8 @@ public class Parser {
             dump("definitions1 -> ; definitions");
             parseDefinitions();
         }
-        else if (checkSkip(TokenType.EOF))
-            dump("definitions1 -> e");
         else
-            Report.error(symbol.position,"syntax error: expected \";\" or EOF");
+            dump("definitions1 -> e");
     }
 
     private void parseDefinition() {
