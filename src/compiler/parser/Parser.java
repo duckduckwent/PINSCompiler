@@ -75,8 +75,10 @@ public class Parser {
             dump("definitions1 -> ; definitions");
             parseDefinitions();
         }
-        else
+        else if (checkSkip(TokenType.EOF))
             dump("definitions1 -> e");
+        else
+            Report.error(symbol.position,"syntax error: expected \";\" or EOF");
     }
 
     private void parseDefinition() {
