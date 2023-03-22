@@ -121,7 +121,8 @@ public class Position {
 
         @Override
         public boolean equals(Object obj) {
-            return (obj instanceof Location other) && this.line == other.line && this.column == other.column;
+            return (obj instanceof Location other) &&
+                this.line == other.line && this.column == other.column;
         }
 
         @Override
