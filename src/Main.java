@@ -11,9 +11,14 @@ import java.util.Optional;
 
 import cli.PINS;
 import cli.PINS.Phase;
-import compiler.common.PrettyPrintVisitor1;
+import compiler.common.PrettyPrintVisitor2;
 import compiler.lexer.Lexer;
 import compiler.parser.Parser;
+import compiler.parser.ast.def.Def;
+import compiler.seman.common.NodeDescription;
+import compiler.seman.name.NameChecker;
+import compiler.seman.name.env.FastSymbolTable;
+import compiler.seman.name.env.SymbolTable;
 
 public class Main {
     /**
@@ -58,11 +63,24 @@ public class Main {
         }
 
         // abstraktna sintaksa
-        var prettyPrint = new PrettyPrintVisitor1(2, System.out);
+        var prettyPrint = new PrettyPrintVisitor2(2, System.out);
         if (cli.dumpPhases.contains(Phase.AST)) {
             ast.accept(prettyPrint);
         }
         if (cli.execPhase == Phase.AST) {
+            return;
+        }
+
+        // razreševanje imen
+        SymbolTable symbolTable = new FastSymbolTable();
+        var definitions = new NodeDescription<Def>();
+        var nameChecker = new NameChecker(definitions, symbolTable);
+        ast.accept(nameChecker);
+        if (cli.dumpPhases.contains(Phase.NAME)) {
+            prettyPrint.definitions = Optional.of(definitions);
+            ast.accept(prettyPrint);
+        }
+        if (cli.execPhase == Phase.NAME) {
             return;
         }
     }

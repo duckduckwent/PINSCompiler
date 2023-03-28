@@ -10,6 +10,7 @@ import static common.RequireNonNull.requireNonNull;
 
 import java.io.PrintStream;
 import java.util.List;
+import java.util.Optional;
 
 import common.VoidOperator;
 import compiler.parser.ast.*;
@@ -18,8 +19,9 @@ import compiler.parser.ast.expr.*;
 import compiler.parser.ast.type.Array;
 import compiler.parser.ast.type.Atom;
 import compiler.parser.ast.type.TypeName;
+import compiler.seman.common.NodeDescription;
 
-public class PrettyPrintVisitor1 implements Visitor {
+public class PrettyPrintVisitor2 implements Visitor {
     /**
      * Trenutna indentacija.
      */
@@ -36,12 +38,17 @@ public class PrettyPrintVisitor1 implements Visitor {
     private PrintStream stream;
 
     /**
+     * Razrešena imena. 
+     */
+    public Optional<NodeDescription<Def>> definitions = Optional.empty();
+
+    /**
      * Ustvari novo instanco.
      * 
      * @param increaseIndentBy za koliko naj se poveča indentacija pri gnezdenju.
      * @param stream izhodni tok.
      */
-    public PrettyPrintVisitor1(int increaseIndentBy, PrintStream stream) {
+    public PrettyPrintVisitor2(int increaseIndentBy, PrintStream stream) {
         requireNonNull(stream);
         this.increaseIndentBy = increaseIndentBy;
         this.stream = stream;
@@ -49,11 +56,12 @@ public class PrettyPrintVisitor1 implements Visitor {
 
     /**
      * Ustvari novo instanco.
+     * 
      * Privzeta vrednost `increaseIndentBy` je 4.
      * 
      * @param stream izhodni tok.
      */
-    public PrettyPrintVisitor1(PrintStream stream) {
+    public PrettyPrintVisitor2(PrintStream stream) {
         requireNonNull(stream);
         this.increaseIndentBy = 4;
         this.stream = stream;
@@ -67,6 +75,7 @@ public class PrettyPrintVisitor1 implements Visitor {
     public void visit(Call call) {
         println("Call", call, call.name);
         inNewScope(() -> {
+            printDefinedAt(call);
             call.arguments.forEach((arg) -> arg.accept(this));
         });
     }
@@ -103,6 +112,9 @@ public class PrettyPrintVisitor1 implements Visitor {
     @Override
     public void visit(Name name) {
         println("Name", name, name.name);
+        inNewScope(() -> {
+            printDefinedAt(name);
+        });
     }
 
     @Override
@@ -209,6 +221,9 @@ public class PrettyPrintVisitor1 implements Visitor {
     @Override
     public void visit(TypeName name) {
         println("TypeName", name, name.identifier);
+        inNewScope(() -> {
+            printDefinedAt(name);
+        });
     }
 
     // ----------------------------------
@@ -250,5 +265,15 @@ public class PrettyPrintVisitor1 implements Visitor {
             stream.print(a);
         }
         stream.println();
+    }
+
+    private void printDefinedAt(Ast node) {
+        if (definitions.isPresent()) {
+            var definition = definitions.get().valueFor(node);
+            if (definition.isEmpty()) {
+                throw new RuntimeException(node.toString());
+            }
+            print("# defined at: ", definition.get().position.toString(), "\n");
+        }
     }
 }
