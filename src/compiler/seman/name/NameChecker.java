@@ -40,16 +40,23 @@ public class NameChecker implements Visitor {
 
         // ce obstaja definicija z istim imenom v simbolni tabeli preveri ali je to dejansko definicija spremenljivke
         if (definition.isPresent())
-            if (definition.get() instanceof VarDef)
+            if (definition.get() instanceof FunDef)
                 definitions.store(call, definition.get());      // ime spremenljivke kaže na definicijo le-te
             else {
                 // za lepši izpis napake
                 var id = definition.get().name;
-                var defName = definition.get() instanceof TypeDef ? "type \""+id+"\"" : "variable \""+id+"\"";
+                var defName = "unknown definition";
+                if (definition.get() instanceof VarDef || definition.get() instanceof Parameter)
+                    defName = "variable \""+id+"\"";
+                else if (definition.get() instanceof TypeDef)
+                    defName = "type \""+id+"\"";
                 Report.error(call.position, "semantic error: expected function, got " + defName);
             }
         else
             Report.error(call.position, "semantic error: undefined function \"" + call.name + "\"");
+
+        for (var argument : call.arguments)
+            argument.accept(this);
     }
 
     @Override
@@ -84,7 +91,11 @@ public class NameChecker implements Visitor {
             else {
                 // za lepši izpis napake
                 var id = definition.get().name;
-                var defName = definition.get() instanceof TypeDef ? "type \""+id+"\"" : "function \""+id+"\"";
+                var defName = "unknown definition";
+                if (definition.get() instanceof TypeDef)
+                    defName = "type \""+id+"\"";
+                else if (definition.get() instanceof FunDef)
+                    defName = "function \""+id+"\"";
                 Report.error(name.position, "semantic error: expected variable, got " + defName);
             }
         else
@@ -140,10 +151,14 @@ public class NameChecker implements Visitor {
 
     @Override
     public void visit(FunDef funDef) {
+        // prvo se obdelajo samo tipi parametrov in tip rezultata
+        for (var parameter : funDef.parameters)
+            parameter.type.accept(this);
+        funDef.type.accept(this);
+
         symbolTable.inNewScope(() -> {
             for (var parameter : funDef.parameters)
                 parameter.accept(this);
-            funDef.type.accept(this);
             funDef.body.accept(this);
         });
     }
@@ -165,7 +180,6 @@ public class NameChecker implements Visitor {
         } catch (DefinitionAlreadyExistsException e) {
             Report.error(parameter.position, "semantic error: definition already exists");
         }
-        parameter.type.accept(this);    // poišči deklaracijo tipa
     }
 
     @Override
@@ -189,7 +203,11 @@ public class NameChecker implements Visitor {
             else {
                 // za lepši izpis napake
                 var id = definition.get().name;
-                var defName = definition.get() instanceof VarDef ? "variable \""+id+"\"" : "function \""+id+"\"";
+                var defName = "unknown definition";
+                if (definition.get() instanceof VarDef || definition.get() instanceof Parameter)
+                    defName = "variable \""+id+"\"";
+                else if (definition.get() instanceof FunDef)
+                    defName = "function \""+id+"\"";
                 Report.error(name.position, "semantic error: expected type, got " + defName);
             }
         else
