@@ -123,7 +123,9 @@ public class PrettyPrintVisitor2 implements Visitor {
         inNewScope(() -> {
             ifThenElse.condition.accept(this);
             ifThenElse.thenExpression.accept(this);
-            ifThenElse.elseExpression.ifPresent(expr -> expr.accept(this));
+            if (ifThenElse.elseExpression.isPresent()) {
+                ifThenElse.elseExpression.get().accept(this);
+            }
         });
     }
 

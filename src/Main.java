@@ -11,7 +11,7 @@ import java.util.Optional;
 
 import cli.PINS;
 import cli.PINS.Phase;
-import compiler.common.PrettyPrintVisitor2;
+import compiler.common.PrettyPrintVisitor3;
 import compiler.lexer.Lexer;
 import compiler.parser.Parser;
 import compiler.parser.ast.def.Def;
@@ -19,6 +19,8 @@ import compiler.seman.common.NodeDescription;
 import compiler.seman.name.NameChecker;
 import compiler.seman.name.env.FastSymbolTable;
 import compiler.seman.name.env.SymbolTable;
+import compiler.seman.type.TypeChecker;
+import compiler.seman.type.type.Type;
 
 public class Main {
     /**
@@ -41,7 +43,9 @@ public class Main {
     }
 
     private static void run(PINS cli, String sourceCode) {
-        // leksikalna analiza
+        /**
+         * Izvedi leksikalno analizo.
+         */
         var symbols = new Lexer(sourceCode).scan();
         if (cli.dumpPhases.contains(Phase.LEX)) {
             for (var symbol : symbols) {
@@ -51,8 +55,9 @@ public class Main {
         if (cli.execPhase == Phase.LEX) {
             return;
         }
-
-        // sintaksna analiza
+        /**
+         * Izvedi sintaksno analizo.
+         */
         Optional<PrintStream> out = cli.dumpPhases.contains(Phase.SYN)
                 ? Optional.of(System.out)
                 : Optional.empty();
@@ -61,17 +66,19 @@ public class Main {
         if (cli.execPhase == Phase.SYN) {
             return;
         }
-
-        // abstraktna sintaksa
-        var prettyPrint = new PrettyPrintVisitor2(2, System.out);
+        /**
+         * Abstraktna sintaksa.
+         */
+        var prettyPrint = new PrettyPrintVisitor3(2, System.out);
         if (cli.dumpPhases.contains(Phase.AST)) {
             ast.accept(prettyPrint);
         }
         if (cli.execPhase == Phase.AST) {
             return;
         }
-
-        // razreševanje imen
+        /**
+         * Izvedi razreševanje imen.
+         */
         SymbolTable symbolTable = new FastSymbolTable();
         var definitions = new NodeDescription<Def>();
         var nameChecker = new NameChecker(definitions, symbolTable);
@@ -81,6 +88,21 @@ public class Main {
             ast.accept(prettyPrint);
         }
         if (cli.execPhase == Phase.NAME) {
+            return;
+        }
+        /**
+         * Izvedi preverjanje tipov.
+         */
+        var types = new NodeDescription<Type>();
+        var typeChecker = new TypeChecker(definitions, types);
+        ast.accept(typeChecker);
+
+        if (cli.dumpPhases.contains(Phase.TYP)) {
+            prettyPrint.definitions = Optional.of(definitions);
+            prettyPrint.types = Optional.of(types);
+            ast.accept(prettyPrint);
+        }
+        if (cli.execPhase == Phase.TYP) {
             return;
         }
     }

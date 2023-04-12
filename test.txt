@@ -1,6 +1,7 @@
-var y : a;
-var x : integer;
+var x : tip1;
+typ tip1 : tip2;
+typ tip2 : string;
+typ tip3 : tip1;
 
-fun f ( x : a ) : logical = y + x { where var x : b; typ b : a };
-
-typ a : integer
+fun f (y : tip3): logical = g(x);
+fun g (y : string): logical = f(y)
