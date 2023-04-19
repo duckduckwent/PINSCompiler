@@ -132,6 +132,14 @@ public class TypeChecker implements Visitor {
         if (binary.operator == Binary.Operator.ARR && type1.get().asArray().isPresent() && type2.get().isInt()) {
             types.store(binary, type1.get().asArray().get().type);
         }
+        // Če je znak "|" ali "&"
+        else if (binary.operator.isAndOr()) {
+            if (type1.get().isLog() && type2.get().isLog())
+                types.store(binary, new Type.Atom(Type.Atom.Kind.LOG));
+            else
+                Report.error(binary.position, "semantic error: invalid types for operator " + binary.operator);
+
+        }
         // Obe strani morata biti enakega atomarnega tipa
         else if (type1.get().isAtom() && type1.get().equals(type2.get())) {
             // Preveri, da ta tip slučajno ni void
