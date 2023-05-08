@@ -53,8 +53,8 @@ public class Frame {
      * @return velikost klicnega zapisa
      */
     public int size() {
-        return localsSize + Constants.WordSize + Math.max(Constants.WordSize, argumentsSize) + Constants.WordSize;
-        //          (oldFP) ~~~~~~~~~~~~~~~~~~            ~~~~~~~~~~~~~~~~~~ (RV)         (SL) ~~~~~~~~~~~~~~~~~~
+        return localsSize + Constants.WordSize + Math.max(Constants.WordSize, argumentsSize);
+        //          (oldFP) ~~~~~~~~~~~~~~~~~~            ~~~~~~~~~~~~~~~~~~ (RV)
     }
 
     public int oldFPOffset() {

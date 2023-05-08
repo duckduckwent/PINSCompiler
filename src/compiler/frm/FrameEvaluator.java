@@ -82,8 +82,8 @@ public class FrameEvaluator implements Visitor {
 
     @Override
     public void visit(Call call) {
-        // Velikost argumentov je velikost ene besede krat število argumentov, saj se prenašajo le po referenci
-        int argumentsSize = Constants.WordSize * call.arguments.size();
+        // Velikost argumentov je velikost ene besede krat število argumentov, saj se prenašajo le po referenci + SL
+        int argumentsSize = Constants.WordSize * call.arguments.size() + Constants.WordSize;
         this.builderStack.peek().addFunctionCall(argumentsSize);
     }
 
