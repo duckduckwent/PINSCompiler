@@ -63,6 +63,11 @@ public abstract class Type {
     }
 
     /**
+     * Preveri, ali je tip 'VOID'
+     */
+    public boolean isVoid() { return (this instanceof Atom a) && a.kind == Atom.Kind.VOID; }
+
+    /**
      * Če je tip atomaren tip, ga vrne. Sicer
      * vrne `Optional.empty()`.
      */

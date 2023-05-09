@@ -185,10 +185,16 @@ public class TypeChecker implements Visitor {
         var lastExpr = block.expressions.get(block.expressions.size()-1);
         var type = types.valueFor(lastExpr);
 
-        if (type.isPresent())
+        if (type.isEmpty()) {
+            Report.error(lastExpr.position, "semantic error: unable to calculate type for expression");
+            return;
+        }
+
+        // Če je zadnji izraz tipa VOID, potem je to neveljaven program
+        if (!type.get().isVoid())
             types.store(block, type.get());
         else
-            Report.error(lastExpr.position, "semantic error: unable to calculate type for expression");
+            Report.error(lastExpr.position, "semantic error: last expression in block cannot be void type");
     }
 
     @Override
