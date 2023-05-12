@@ -169,9 +169,9 @@ public class Frame {
     public static class Builder {
         public final Label label;
         public final int staticLevel;
-        public int parametersSize;
-        public int argumentsSize;
-        public int localsSize;
+        private int parametersSize;
+        private int argumentsSize;
+        private int localsSize;
 
         public Builder(Label label, int staticLevel) {
             this.label = label;
