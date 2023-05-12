@@ -8,6 +8,7 @@ package compiler.seman.name;
 import static common.RequireNonNull.requireNonNull;
 
 import common.Report;
+import common.Constants;
 import compiler.common.Visitor;
 import compiler.parser.ast.def.*;
 import compiler.parser.ast.def.FunDef.Parameter;
@@ -36,24 +37,36 @@ public class NameChecker implements Visitor {
 
     @Override
     public void visit(Call call) {
-        var definition = symbolTable.definitionFor(call.name);     // definicija tipa
+        boolean isStandardFunction = switch (call.name) {
+            case Constants.printIntLabel,
+                    Constants.seedLabel,
+                    Constants.printStringLabel,
+                    Constants.printLogLabel,
+                    Constants.randIntLabel -> true;
+            default -> false;
+        };
 
-        // ce obstaja definicija z istim imenom v simbolni tabeli preveri ali je to dejansko definicija spremenljivke
-        if (definition.isPresent())
-            if (definition.get() instanceof FunDef)
-                definitions.store(call, definition.get());      // ime spremenljivke kaže na definicijo le-te
-            else {
-                // za lepši izpis napake
-                var id = definition.get().name;
-                var defName = "unknown definition";
-                if (definition.get() instanceof VarDef || definition.get() instanceof Parameter)
-                    defName = "variable \""+id+"\"";
-                else if (definition.get() instanceof TypeDef)
-                    defName = "type \""+id+"\"";
-                Report.error(call.position, "semantic error: expected function, got " + defName);
-            }
-        else
-            Report.error(call.position, "semantic error: undefined function \"" + call.name + "\"");
+        if (!isStandardFunction) {
+            // definicija tipa
+            var definition = symbolTable.definitionFor(call.name);
+
+            // ce obstaja definicija z istim imenom v simbolni tabeli preveri ali je to dejansko definicija spremenljivke
+            if (definition.isPresent())
+                if (definition.get() instanceof FunDef)
+                    definitions.store(call, definition.get());      // ime spremenljivke kaže na definicijo le-te
+                else {
+                    // za lepši izpis napake
+                    var id = definition.get().name;
+                    var defName = "unknown definition";
+                    if (definition.get() instanceof VarDef || definition.get() instanceof Parameter)
+                        defName = "variable \""+id+"\"";
+                    else if (definition.get() instanceof TypeDef)
+                        defName = "type \""+id+"\"";
+                    Report.error(call.position, "semantic error: expected function, got " + defName);
+                }
+            else
+                Report.error(call.position, "semantic error: undefined function \"" + call.name + "\"");
+        }
 
         for (var argument : call.arguments)
             argument.accept(this);

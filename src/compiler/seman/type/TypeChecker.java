@@ -8,6 +8,7 @@ package compiler.seman.type;
 import static common.RequireNonNull.requireNonNull;
 
 import common.Report;
+import common.Constants;
 import compiler.common.Visitor;
 import compiler.parser.ast.def.*;
 import compiler.parser.ast.def.FunDef.Parameter;
@@ -46,63 +47,110 @@ public class TypeChecker implements Visitor {
 
     @Override
     public void visit(Call call) {
-        // Pridobi definicijo funkcije
-        var def = definitions.valueFor(call);
-        if (def.isEmpty()) {
-            Report.error(call.position, "semantic error: function " + call.name + " does not exist");
-            return;
-        }
+        Type type = new Type.Atom(Type.Atom.Kind.INT);
 
-        // Preveri ali je dejansko FunDef (če ne potem Java teži v nadaljevanju)
-        if (!(def.get() instanceof FunDef funDef)) {
-            Report.error(call.position, "semantic error: " + def.get().name + " is not a function");
-            return;
-        }
+        for (var argument : call.arguments)
+            argument.accept(this);
 
-        // Preveri, ali ima klic funkcije ustrezne elemente (število le teh in njihovi tipi)
-        if (funDef.parameters.size() != call.arguments.size()) {
-            Report.error(call.position, "semantic error: function call does not have the same amount of arguments as there are parameters in function " + funDef.name);
-            return;
-        }
+        switch (call.name) {
+            case Constants.printIntLabel, Constants.seedLabel -> {
+                if (call.arguments.size() == 1) {
+                    var tempType = types.valueFor(call.arguments.get(0));
+                    if (tempType.isPresent() && tempType.get().isInt())
+                        break;
+                }
+                Report.error(call.arguments.get(0).position, "semantic error: argument should be INT");
+            }
+            case Constants.printStringLabel -> {
+                if (call.arguments.size() == 1) {
+                    var tempType = types.valueFor(call.arguments.get(0));
+                    if (tempType.isPresent() && tempType.get().isStr()) {
+                        type = new Type.Atom(Type.Atom.Kind.STR);
+                        break;
+                    }
+                }
+                Report.error(call.arguments.get(0).position, "semantic error: argument should be STR");
 
-        // Preveri enakost tipov med isto ležečim parom argumentov in parametrov
-        for (int i = 0; i < call.arguments.size(); i++) {
-            // Pridobi tip parametra
-            var paramType = types.valueFor(funDef.parameters.get(i));
-            if (paramType.isEmpty()) {
-                funDef.parameters.get(i).accept(this);
-                paramType = types.valueFor(funDef.parameters.get(i));
-                if (paramType.isEmpty()) {
-                    Report.error(funDef.parameters.get(i).position, "semantic error: unable to calculate type for parameter");
+            }
+            case Constants.printLogLabel -> {
+                if (call.arguments.size() == 1) {
+                    var tempType = types.valueFor(call.arguments.get(0));
+                    if (tempType.isPresent() && tempType.get().isLog()) {
+                        type = new Type.Atom(Type.Atom.Kind.LOG);
+                        break;
+                    }
+                }
+                Report.error(call.arguments.get(0).position, "semantic error: argument should be LOG");
+            }
+            case Constants.randIntLabel -> {
+                if (call.arguments.size() == 2) {
+                    var tempType1 = types.valueFor(call.arguments.get(0));
+                    var tempType2 = types.valueFor(call.arguments.get(1));
+                    if (tempType1.isPresent() && tempType1.get().isInt() && tempType2.isPresent() && tempType2.get().isInt()) {
+                        type = new Type.Atom(Type.Atom.Kind.INT);
+                        break;
+                    }
+                }
+                Report.error(call.arguments.get(0).position, "semantic error: both arguments should be INT");
+            }
+            // Če ni standardna funkcija, jo obdelaj drugače
+            default -> {
+                // Pridobi definicijo funkcije
+                var def = definitions.valueFor(call);
+                if (def.isEmpty()) {
+                    Report.error(call.position, "semantic error: function " + call.name + " does not exist");
                     return;
                 }
-            }
-            // Pridobi tip argumenta
-            var argType = types.valueFor(call.arguments.get(i));
-            if (argType.isEmpty()) {
-                call.arguments.get(i).accept(this);
-                argType = types.valueFor(call.arguments.get(i));
-                if (argType.isEmpty()) {
-                    Report.error(call.arguments.get(i).position, "semantic error: unable to calculate type for argument");
+
+                // Preveri ali je dejansko FunDef (če ne potem Java teži v nadaljevanju)
+                if (!(def.get() instanceof FunDef funDef)) {
+                    Report.error(call.position, "semantic error: " + def.get().name + " is not a function");
                     return;
                 }
-            }
-            // Primerjaj enakost para
-            if (!paramType.get().equals(argType.get()))
-                Report.error(call.arguments.get(i).position, "semantic error: type mismatch, expected " + paramType.get() + ", got " + argType.get());
-        }
 
-        // Če so argumenti ustrezni, potem je tip klica funkcije enak tipu rezultata funkcije
-        var returnType = types.valueFor(funDef.type);
-        if (returnType.isEmpty()) {
-            funDef.type.accept(this);
-            returnType = types.valueFor(funDef.type);
-            if (returnType.isEmpty()) {
-                Report.error(funDef.type.position, "semantic error: unable to calculate type for function return");
-                return;
+                // Preveri, ali ima klic funkcije ustrezne elemente (število le teh in njihovi tipi)
+                if (funDef.parameters.size() != call.arguments.size()) {
+                    Report.error(call.position, "semantic error: function call does not have the same amount of arguments as there are parameters in function " + funDef.name);
+                    return;
+                }
+
+                // Preveri enakost tipov med isto ležečim parom argumentov in parametrov
+                for (int i = 0; i < call.arguments.size(); i++) {
+                    // Pridobi tip parametra
+                    var paramType = types.valueFor(funDef.parameters.get(i));
+                    if (paramType.isEmpty()) {
+                        funDef.parameters.get(i).accept(this);
+                        paramType = types.valueFor(funDef.parameters.get(i));
+                        if (paramType.isEmpty()) {
+                            Report.error(funDef.parameters.get(i).position, "semantic error: unable to calculate type for parameter");
+                            return;
+                        }
+                    }
+                    // Pridobi tip argumenta
+                    var argType = types.valueFor(call.arguments.get(i));
+                    if (argType.isEmpty()) {
+                        Report.error(call.arguments.get(i).position, "semantic error: unable to calculate type for argument");
+                        return;
+                    }
+                    // Primerjaj enakost para
+                    if (!paramType.get().equals(argType.get()))
+                        Report.error(call.arguments.get(i).position, "semantic error: type mismatch, expected " + paramType.get() + ", got " + argType.get());
+                }
+
+                // Če so argumenti ustrezni, potem je tip klica funkcije enak tipu rezultata funkcije
+                var returnType = types.valueFor(funDef.type);
+                if (returnType.isEmpty()) {
+                    funDef.type.accept(this);
+                    returnType = types.valueFor(funDef.type);
+                    if (returnType.isEmpty()) {
+                        Report.error(funDef.type.position, "semantic error: unable to calculate type for function return");
+                        return;
+                    }
+                }
+                type = returnType.get();
             }
         }
-        types.store(call, returnType.get());
+        types.store(call, type);
     }
 
     @Override
