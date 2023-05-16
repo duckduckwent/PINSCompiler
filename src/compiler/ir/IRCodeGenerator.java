@@ -110,6 +110,7 @@ public class IRCodeGenerator implements Visitor {
         List<IRExpr> args = new ArrayList<>();
         Label functionLabel;
         int staticLevel = 1;
+        Optional<MoveStmt> oldFPCode = Optional.empty();
 
         switch (call.name) {
             case Constants.printIntLabel ->    functionLabel = Label.named(Constants.printIntLabel);
@@ -131,6 +132,9 @@ public class IRCodeGenerator implements Visitor {
                 }
                 functionLabel = frame.get().label;
                 staticLevel = frame.get().staticLevel;
+
+                BinopExpr oldFPAddress = new BinopExpr(NameExpr.SP(), new ConstantExpr(-frame.get().oldFPOffset()), BinopExpr.Operator.ADD);
+                oldFPCode = Optional.of(new MoveStmt(new MemExpr(oldFPAddress), NameExpr.FP()));
             }
         }
 
@@ -139,13 +143,11 @@ public class IRCodeGenerator implements Visitor {
         if (staticLevel <= 1)
             args.add(new ConstantExpr(0));
         // Če je to funkcijo klicala starševska funkcija
-        else if (staticLevel > currentStaticLevel) {
+        else if (staticLevel > currentStaticLevel)
             args.add(NameExpr.FP());
-        }
         // Če je funkcija klicala sama sebe
-        else if (staticLevel == currentStaticLevel) {
+        else if (staticLevel == currentStaticLevel)
             args.add(new MemExpr(NameExpr.FP()));
-        }
         // Če je funkcija klicala katerekoli izmed svojih starševskih funkcij (sepravi vse funkcije, ki so nad to)
         else {
             MemExpr staticJumps = new MemExpr(new MemExpr(NameExpr.FP()));      // Skok za dva nivoja višje
@@ -168,7 +170,12 @@ public class IRCodeGenerator implements Visitor {
             }
             Report.error(argument.position, "ir error: could not generate intermediate code for argument");
         }
-        imcCode.store(call, new CallExpr(functionLabel, args));
+
+        CallExpr callExpr = new CallExpr(functionLabel, args);
+        if (oldFPCode.isEmpty())
+            imcCode.store(call, new EseqExpr(SeqStmt.empty(), callExpr));
+        else
+            imcCode.store(call, new EseqExpr(oldFPCode.get(), callExpr));
     }
 
     @Override
