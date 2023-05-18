@@ -15,6 +15,9 @@ import compiler.common.PrettyPrintVisitor4;
 import compiler.frm.Access;
 import compiler.frm.Frame;
 import compiler.frm.FrameEvaluator;
+import compiler.gen.LinCodeGenerator;
+import compiler.gen.Memory;
+import compiler.interpret.Interpreter;
 import compiler.ir.IRCodeGenerator;
 import compiler.ir.IRPrettyPrint;
 import compiler.lexer.Lexer;
@@ -101,7 +104,6 @@ public class Main {
         var types = new NodeDescription<Type>();
         var typeChecker = new TypeChecker(definitions, types);
         ast.accept(typeChecker);
-
         if (cli.dumpPhases.contains(Phase.TYP)) {
             prettyPrint.definitions = Optional.of(definitions);
             prettyPrint.types = Optional.of(types);
@@ -137,6 +139,22 @@ public class Main {
         }
         if (cli.execPhase == Phase.IMC) {
             return;
+        }
+        /**
+         * Linearizacija vmesne kode.
+         */
+        var memory = new Memory(cli.memory);
+        var mainCodeChunk = new LinCodeGenerator(memory).generateCode(generator.chunks);
+        if (!cli.dumpPhases.contains(Phase.INT)) {
+            return;
+        }
+        /**
+         * Izvajanje vmesne kode.
+         */
+        if (mainCodeChunk.isPresent()) {
+            Optional<PrintStream> outputStream = cli.dumpPhases.contains(Phase.INT) ? Optional.of(System.out) : Optional.empty();
+            var interpreter = new Interpreter(memory, outputStream);
+            interpreter.interpret(mainCodeChunk.get());
         }
     }
 }

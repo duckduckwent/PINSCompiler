@@ -1,19 +1,13 @@
-var x: integer;
-typ _ : integer;
-fun f ( _ : _ ) : integer = 0;
-fun g ( _ : _ ) : integer = x + 2;
-fun h ( _ : _ ) : logical = (+1, +++1, -1, !false);
-fun i ( _ : _ ) : integer = ({ while x < 1 : f(x) }, x);
-fun main (x : integer) : integer = (
-    ff(y) { where
-        var y : arr[20] integer;
-        fun ff ( a : arr[20] integer) : integer = a[0]
-    }
-);
-fun standard ( _ : _ ) : _ = (
-    print_int(0),
-    print_str('0'),
-    print_log(true),
-    rand_int(0, 0),
-    seed(0)
-)
+fun fib(n:integer) : integer = (
+    {
+        if n <= 1 then
+            { result = n }
+        else(
+            { result = fib(n-1)},
+            { result = result + fib(n-2) }
+        )
+    },
+    result
+) { where var result : integer };
+
+fun main(argc : integer) : integer = fib(5)
