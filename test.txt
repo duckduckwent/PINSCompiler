@@ -1,13 +1,18 @@
-fun fib(n:integer) : integer = (
-    {
-        if n <= 1 then
-            { result = n }
-        else(
-            { result = fib(n-1)},
-            { result = result + fib(n-2) }
-        )
-    },
-    result
-) { where var result : integer };
+typ log : logical;
+typ int : integer;
 
-fun main(argc : integer) : integer = fib(5)
+fun test (n : int) : int = (
+    {
+        for i=0, n, 1:
+            { table[n][i] = n * (2 % 3) }
+    },
+    print_int(table[n][2])
+)
+{ where
+    var table : arr[5] arr[5] int;
+    var i : int
+};
+
+fun main (argc : integer) : int = (
+    test(4)
+)

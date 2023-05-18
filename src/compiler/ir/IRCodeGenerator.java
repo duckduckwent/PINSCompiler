@@ -414,20 +414,25 @@ public class IRCodeGenerator implements Visitor {
             return;
         }
 
-        // Izračuna vmesno kodo celotnega unary izraza
-        if (exprCode.get() instanceof ConstantExpr irExpr) {
-            switch (unary.operator) {
-                case SUB -> imcCode.store(unary, new BinopExpr(new ConstantExpr(0), irExpr, BinopExpr.Operator.SUB));
-                case ADD -> imcCode.store(unary, irExpr);
-                case NOT -> {
-                    // Prvo logičnem izrazu (0 ali 1) prišteje 1, nato pa izračuna ostanek pri deljenju z 2
-                    BinopExpr addOne = new BinopExpr(irExpr, new ConstantExpr(1), BinopExpr.Operator.ADD);
-                    imcCode.store(unary, new BinopExpr(addOne, new ConstantExpr(2), BinopExpr.Operator.MOD));
-                }
-            }
+        // Prepričaj javo, da je ok :)
+        IRExpr irExpr;
+        if (exprCode.get() instanceof IRExpr expr)
+            irExpr = expr;
+        else {
+            Report.error(unary.position, "ir error: could not generate intermediate code for unary expression");
             return;
         }
-        Report.error(unary.position, "ir error: could not generate intermediate code for unary expression");
+
+        // Izračuna vmesno kodo celotnega unary izraza
+        switch (unary.operator) {
+            case SUB -> imcCode.store(unary, new BinopExpr(new ConstantExpr(0), irExpr, BinopExpr.Operator.SUB));
+            case ADD -> imcCode.store(unary, irExpr);
+            case NOT -> {
+                // Prvo logičnem izrazu (0 ali 1) prišteje 1, nato pa izračuna ostanek pri deljenju z 2
+                BinopExpr addOne = new BinopExpr(irExpr, new ConstantExpr(1), BinopExpr.Operator.ADD);
+                imcCode.store(unary, new BinopExpr(addOne, new ConstantExpr(2), BinopExpr.Operator.MOD));
+            }
+        }
     }
 
     @Override
