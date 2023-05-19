@@ -205,7 +205,7 @@ public class TypeChecker implements Visitor {
                 switch (binary.operator) {
                     case ADD, SUB, MUL, DIV, MOD ->
                         Report.error(binary.position, "semantic error: cannot calculate with LOGICAL types");
-                    default -> types.store(binary, new Type.Atom(Type.Atom.Kind.INT));
+                    default -> types.store(binary, new Type.Atom(Type.Atom.Kind.LOG));
                 }
             }
             // Če sta oba tipa INTEGER, je lahko končni tip INTEGER ali LOGICAL (odvisno od operatorjev)
