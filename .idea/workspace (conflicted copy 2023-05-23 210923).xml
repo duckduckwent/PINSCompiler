@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="3ae276cb-7856-49f0-9e0f-fae04f888db7" name="Changes" comment="popravek štetja argumentov pri klicu funkcije">
+      <change beforePath="$PROJECT_DIR$/out/production/PINSCompiler/compiler/frm/FrameEvaluator.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/PINSCompiler/compiler/frm/FrameEvaluator.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/PINSCompiler/compiler/interpret/Interpreter.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/PINSCompiler/compiler/interpret/Interpreter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/PINSCompiler/compiler/ir/IRCodeGenerator$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/PINSCompiler/compiler/ir/IRCodeGenerator$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/PINSCompiler/compiler/ir/IRCodeGenerator.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/PINSCompiler/compiler/ir/IRCodeGenerator.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/PINSCompiler/compiler/seman/type/TypeChecker.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/PINSCompiler/compiler/seman/type/TypeChecker.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/compiler/interpret/Interpreter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/compiler/interpret/Interpreter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/compiler/ir/IRCodeGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/compiler/ir/IRCodeGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.txt" beforeDir="false" afterPath="$PROJECT_DIR$/test.txt" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="selectedUrlAndAccountId">
+      <UrlAndAccount>
+        <option name="accountId" value="5a0584cf-9324-4ca2-a3ce-6804b39ddd66" />
+        <option name="url" value="https://github.com/duckduckwent/PINSCompiler.git" />
+      </UrlAndAccount>
+    </option>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2NY5DEOQXByNj1wxOzxVx57Nbda" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;extract.method.default.visibility&quot;: &quot;private&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/gejms/Downloads/Interpreter.java&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;two.files.diff.last.used.file&quot;: &quot;/home/gejms/Downloads/Interpreter.java&quot;,
+    &quot;two.files.diff.last.used.folder&quot;: &quot;/home/gejms/Documents/FRI/Zapiski/2. Letnik - 2. Semester (2022-2023)/Prevajalniki in navidezni stroji/LV10 - Interpreter/DN8/PINSCompiler&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RunManager">
+    <configuration name="PINSCompiler" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="Main" />
+      <module name="PINSCompiler" />
+      <option name="PROGRAM_PARAMETERS" value="PINS test.txt --dump INT --exec INT" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="3ae276cb-7856-49f0-9e0f-fae04f888db7" name="Changes" comment="" />
+      <created>1679828053292</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1679828053292</updated>
+      <workItem from="1679828054533" duration="117000" />
+      <workItem from="1679867137728" duration="1295000" />
+      <workItem from="1679932138709" duration="14319000" />
+      <workItem from="1680016697362" duration="6364000" />
+      <workItem from="1680121910688" duration="4120000" />
+      <workItem from="1680167937785" duration="112000" />
+      <workItem from="1680792929773" duration="205000" />
+      <workItem from="1681140445168" duration="4276000" />
+      <workItem from="1681158134248" duration="4962000" />
+      <workItem from="1681216103721" duration="3048000" />
+      <workItem from="1681222993302" duration="5282000" />
+      <workItem from="1681241666875" duration="2701000" />
+      <workItem from="1681244814813" duration="6655000" />
+      <workItem from="1681289043261" duration="244000" />
+      <workItem from="1681305500281" duration="3903000" />
+      <workItem from="1681311822643" duration="2775000" />
+      <workItem from="1681315108659" duration="6527000" />
+      <workItem from="1681322118460" duration="5545000" />
+      <workItem from="1681330101332" duration="6000" />
+      <workItem from="1681392456967" duration="988000" />
+      <workItem from="1681485928085" duration="832000" />
+      <workItem from="1681827311985" duration="16000" />
+      <workItem from="1681827879826" duration="296000" />
+      <workItem from="1681829134845" duration="689000" />
+      <workItem from="1681832659388" duration="1411000" />
+      <workItem from="1681927754866" duration="82000" />
+      <workItem from="1682011501225" duration="964000" />
+      <workItem from="1682190244737" duration="3346000" />
+      <workItem from="1682242503476" duration="8286000" />
+      <workItem from="1682254323085" duration="13099000" />
+      <workItem from="1682268626467" duration="124000" />
+      <workItem from="1682352610541" duration="164000" />
+      <workItem from="1682430697228" duration="102000" />
+      <workItem from="1682430806704" duration="83000" />
+      <workItem from="1682432807616" duration="197000" />
+      <workItem from="1682433642911" duration="1681000" />
+      <workItem from="1682435468153" duration="1075000" />
+      <workItem from="1683572973846" duration="1141000" />
+      <workItem from="1683580158646" duration="206000" />
+      <workItem from="1683633918770" duration="3029000" />
+      <workItem from="1683641356351" duration="6796000" />
+      <workItem from="1683665075552" duration="4742000" />
+      <workItem from="1683744738398" duration="9785000" />
+      <workItem from="1683807509526" duration="18971000" />
+      <workItem from="1683832333276" duration="6013000" />
+      <workItem from="1683892081775" duration="5111000" />
+      <workItem from="1683900701018" duration="7016000" />
+      <workItem from="1683914758075" duration="17800000" />
+      <workItem from="1684067104476" duration="5000" />
+      <workItem from="1684241004615" duration="5479000" />
+      <workItem from="1684252230730" duration="2821000" />
+      <workItem from="1684346329579" duration="541000" />
+      <workItem from="1684404426695" duration="3511000" />
+      <workItem from="1684431821399" duration="3284000" />
+      <workItem from="1684513949955" duration="15553000" />
+      <workItem from="1684535538961" duration="586000" />
+      <workItem from="1684846371323" duration="724000" />
+      <workItem from="1684853286637" duration="1723000" />
+      <workItem from="1684865906022" duration="3057000" />
+    </task>
+    <task id="LOCAL-00001" summary="razreševanje imen">
+      <created>1680038399591</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1680038399591</updated>
+    </task>
+    <task id="LOCAL-00002" summary="popravek razreševanja imen pri klicu funkcij">
+      <created>1680126063907</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1680126063907</updated>
+    </task>
+    <task id="LOCAL-00003" summary="preverjanje tipov">
+      <created>1681329632324</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1681329632324</updated>
+    </task>
+    <task id="LOCAL-00004" summary="popravek preverjanja tipov pri binarnem izrazu">
+      <created>1681927824910</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1681927824910</updated>
+    </task>
+    <task id="LOCAL-00005" summary="izračun klicnih zapisov in dostopov do spremenljivk">
+      <created>1682268704129</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1682268704129</updated>
+    </task>
+    <task id="LOCAL-00006" summary="popravek izračuna velikosti klicnih zapisov">
+      <created>1683580287886</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1683580287886</updated>
+    </task>
+    <task id="LOCAL-00007" summary="popravek preverjanja tipov pri zadnjem izrazu v bloku">
+      <created>1683637743881</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1683637743881</updated>
+    </task>
+    <task id="LOCAL-00008" summary="added constants and changed some variable visibility in frame">
+      <created>1683915037444</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1683915037444</updated>
+    </task>
+    <task id="LOCAL-00009" summary="added exceptions for standard functions">
+      <created>1683921310866</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1683921310866</updated>
+    </task>
+    <task id="LOCAL-00010" summary="generiranje vmesne kode">
+      <created>1683921663611</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1683921663611</updated>
+    </task>
+    <task id="LOCAL-00011" summary="popravek shranjevanja oldFP pri generiranju vmesne kode">
+      <created>1684256985504</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1684256985504</updated>
+    </task>
+    <task id="LOCAL-00012" summary="interpreter">
+      <created>1684425068518</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1684425068519</updated>
+    </task>
+    <task id="LOCAL-00013" summary="popravek: unarni izrazi lahko generiranjo vmesno kodo za spremenljivke in klice funkcij">
+      <created>1684434284792</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1684434284792</updated>
+    </task>
+    <task id="LOCAL-00014" summary="popravek: preverjanje tipov pravilno razreši logični izraz">
+      <created>1684518112222</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1684518112222</updated>
+    </task>
+    <task id="LOCAL-00015" summary="popravek štetja argumentov pri klicu funkcije">
+      <created>1684529410254</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1684529410254</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="razreševanje imen" />
+    <MESSAGE value="popravek razreševanja imen pri klicu funkcij" />
+    <MESSAGE value="preverjanje tipov" />
+    <MESSAGE value="popravek preverjanja tipov pri binarnem izrazu" />
+    <MESSAGE value="izračun klicnih zapisov in dostopov do spremenljivk" />
+    <MESSAGE value="popravek izračuna velikosti klicnih zapisov" />
+    <MESSAGE value="popravek preverjanja tipov pri zadnjem izrazu v bloku" />
+    <MESSAGE value="added constants and changed some variable visibility in frame" />
+    <MESSAGE value="added exceptions for standard functions" />
+    <MESSAGE value="generiranje vmesne kode" />
+    <MESSAGE value="popravek shranjevanja oldFP pri generiranju vmesne kode" />
+    <MESSAGE value="interpreter" />
+    <MESSAGE value="popravek: unarni izrazi lahko generiranjo vmesno kodo za spremenljivke in klice funkcij" />
+    <MESSAGE value="popravek: preverjanje tipov pravilno razreši logični izraz" />
+    <MESSAGE value="popravek štetja argumentov pri klicu funkcije" />
+    <option name="LAST_COMMIT_MESSAGE" value="popravek štetja argumentov pri klicu funkcije" />
+  </component>
+</project>

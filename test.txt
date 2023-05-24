@@ -1,18 +1,42 @@
-typ log : logical;
-typ int : integer;
+typ arr3dim: arr[2] arr2dim;
+typ arr2dim: arr[2] arr[10] integer;
+var a: arr3dim;
 
-fun test (n : int) : int = (
-    {
-        for i=0, n, 1:
-            { table[n][i] = n * (2 % 3) }
+fun main(x: integer): integer = (
+    fill_array(a[0], 0),
+    fill_array(a[1], 10),
+    print_arr(a),
+    0
+);
+
+fun fill_array(a: arr2dim, x: integer): integer = (
+    { for i = 0, 10, 1:
+      { for j = 0, 2, 1:
+        { a[j][i] = i + j }
+      }
     },
-    print_int(table[n][2])
-)
-{ where
-    var table : arr[5] arr[5] int;
-    var i : int
+    0
+) { where
+    var i: integer;
+    var j: integer
 };
 
-fun main (argc : integer) : int = (
-    test(4)
-)
+fun print_arr(a: arr3dim): integer = (
+    { for i = 0, 2, 1:
+      { for j = 0, 2, 1:
+          print_array(a[i][j])
+      }
+    },
+    0
+) { where
+    var i: integer;
+    var j: integer;
+    fun print_array(a: arr[10] integer): integer = (
+        { for i = 0, 10, 1:
+            print_int(a[i])
+        },
+        0
+    ) { where
+        var i: integer
+    }
+}

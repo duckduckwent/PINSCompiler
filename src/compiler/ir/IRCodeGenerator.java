@@ -162,10 +162,14 @@ public class IRCodeGenerator implements Visitor {
             // Pridobi vmesno kodo argumenta
             argument.accept(this);
             var argCode = imcCode.valueFor(argument);
+            var argType = types.valueFor(argument);
 
             // Dodaj argument, sicer vrni napako
             if (argCode.isPresent() && argCode.get() instanceof IRExpr irExpr) {
-                args.add(irExpr);
+                if (argType.isPresent() && argType.get().isArray() && irExpr instanceof MemExpr memExpr)
+                    args.add(memExpr.expr);
+                else
+                    args.add(irExpr);
                 continue;
             }
             Report.error(argument.position, "ir error: could not generate intermediate code for argument");
@@ -187,7 +191,8 @@ public class IRCodeGenerator implements Visitor {
         // Preveri ali obstaja vmesna koda za oba izraza
         var left = imcCode.valueFor(binary.left);
         var right = imcCode.valueFor(binary.right);
-        if (left.isEmpty() || right.isEmpty()) {
+        var leftType = types.valueFor(binary.left);
+        if (left.isEmpty() || right.isEmpty() || leftType.isEmpty()) {
             Report.error(binary.position, "ir error: could not generate intermediate code");
             return;
         }
@@ -198,14 +203,17 @@ public class IRCodeGenerator implements Visitor {
             }
             else if (binary.operator == Binary.Operator.ARR) {
                 var arrType = types.valueFor(binary);
+                var leftDef = definitions.valueFor(binary.left);
                 if (arrType.isEmpty()) {
                     Report.error(binary.position, "ir error: could not get the type of binary expression");
                     return;
                 }
 
-                // Če je že prišlo do dereferenciranja, obdrži samo naslov
-                if (lhs instanceof MemExpr)
+                // Če je prišlo do dereferenciranja, obdrži samo naslov, razen v primeru, da gre a prenos po referenci
+                boolean isReference = !(leftType.get().isArray() && leftDef.isPresent() && leftDef.get() instanceof Parameter);
+                if (lhs instanceof MemExpr && isReference) {
                     lhs = ((MemExpr) lhs).expr;
+                }
 
                 // Shrani kot dostop do vrednosti (če se ponovno kliče, se ta mem odstrani in nadomesti z novim)
                 imcCode.store(binary, new MemExpr(new BinopExpr(lhs, new BinopExpr(rhs, new ConstantExpr(arrType.get().sizeInBytes()), BinopExpr.Operator.MUL), BinopExpr.Operator.ADD)));
@@ -264,7 +272,7 @@ public class IRCodeGenerator implements Visitor {
             return;
         }
 
-        if (counterCode.get() instanceof IRExpr counter && lowCode.get() instanceof IRExpr low && highCode.get() instanceof IRExpr high && stepCode.get() instanceof IRExpr step && bodyCode.get() instanceof IRExpr body) {
+        if (counterCode.get() instanceof IRExpr counter && lowCode.get() instanceof IRExpr low && highCode.get() instanceof IRExpr high && stepCode.get() instanceof IRExpr step) {
             // Premakni vrednost low v counter
             MoveStmt initCounter = new MoveStmt(counter, low);
 
@@ -285,7 +293,13 @@ public class IRCodeGenerator implements Visitor {
             statements.add(new LabelStmt(conditionLabel));
             statements.add(new CJumpStmt(condition, beginLabel, endLabel));
             statements.add(new LabelStmt(beginLabel));
-            statements.add(new ExpStmt(body));
+
+            // Če je telo zanke izraz, ga zapakiraj v ExpStmt, tako da bo stavek, sicer je to že stavek
+            if (bodyCode.get() instanceof IRExpr irExpr)
+                statements.add(new ExpStmt(irExpr));
+            else
+                statements.add((IRStmt) bodyCode.get());
+
             statements.add(incrementCounter);
             statements.add(new JumpStmt(conditionLabel));
             statements.add(new LabelStmt(endLabel));
@@ -448,7 +462,7 @@ public class IRCodeGenerator implements Visitor {
             return;
         }
 
-        if (conditionCode.get() instanceof IRExpr condition && bodyCode.get() instanceof IRExpr body) {
+        if (conditionCode.get() instanceof IRExpr condition) {
             // Pripravi labele za skakanje
             List<IRStmt> statements = new ArrayList<>();
             Label beginLabel = Label.nextAnonymous();
@@ -459,7 +473,13 @@ public class IRCodeGenerator implements Visitor {
             statements.add(new LabelStmt(conditionLabel));
             statements.add(new CJumpStmt(condition, beginLabel, endLabel));
             statements.add(new LabelStmt(beginLabel));
-            statements.add(new ExpStmt(body));
+            
+            // Če je telo zanke izraz, ga zapakiraj v ExpStmt, tako da bo stavek, sicer je to že stavek
+            if (bodyCode.get() instanceof IRExpr irExpr)
+                statements.add(new ExpStmt(irExpr));
+            else
+                statements.add((IRStmt) bodyCode.get());
+
             statements.add(new JumpStmt(conditionLabel));
             statements.add(new LabelStmt(endLabel));
 

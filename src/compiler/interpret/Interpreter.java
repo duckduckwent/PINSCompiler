@@ -80,7 +80,7 @@ public class Interpreter {
         memory.registerLabel(NameExpr.FP().label, framePointer);
         memory.registerLabel(NameExpr.SP().label, stackPointer);
 
-        Object result = null;
+        Object result;
         if (chunk.code instanceof SeqStmt seq) {
             for (int pc = 0; pc < seq.statements.size(); pc++) {
                 var stmt = seq.statements.get(pc);
@@ -244,7 +244,7 @@ public class Interpreter {
             int argCounter = 0;
             for (var arg : call.args) {
                 memory.stM(stackPointer + argCounter, execute(arg, temps));
-                argCounter += 4;
+                argCounter += Constants.WordSize;
             }
             internalInterpret(chunk, new HashMap<>());
             return memory.ldM(stackPointer);
@@ -267,7 +267,7 @@ public class Interpreter {
     }
 
     private Object execute(NameExpr name) {
-        return name.label;
+        return memory.address(name.label);
     }
 
     private Object execute(TempExpr temp, Map<Frame.Temp, Object> temps) {
